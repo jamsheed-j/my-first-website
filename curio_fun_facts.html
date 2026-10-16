@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b1020" />
+  <title>Curio — Little Facts, Big Wonder</title>
+  <style>
+    :root {
+      --bg: #090d19;
+      --panel: rgba(19, 26, 47, .78);
+      --line: rgba(255,255,255,.11);
+      --text: #f4f6ff;
+      --muted: #a6aec8;
+      --cyan: #6ee7f9;
+      --purple: #a78bfa;
+      --pink: #fb7185;
+      --green: #86efac;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; min-height: 100vh; color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(ellipse at 15% 5%, rgba(90, 74, 220, .22), transparent 35%),
+        radial-gradient(ellipse at 85% 25%, rgba(14, 165, 233, .13), transparent 32%),
+        var(--bg);
+    }
+    button { font: inherit; cursor: pointer; }
+    .wrap { width: min(1100px, 92%); margin: auto; }
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 25px 0; gap: 20px;
+    }
+    .brand { display: flex; align-items: center; gap: 11px; font-weight: 850; letter-spacing: -.04em; font-size: 1.35rem; }
+    .logo {
+      width: 38px; height: 38px; display: grid; place-items: center; border-radius: 13px;
+      color: #080d19; font-size: 1.25rem;
+      background: linear-gradient(135deg, var(--cyan), var(--purple));
+      box-shadow: 0 0 28px rgba(110,231,249,.2);
+    }
+    .brand span { color: var(--cyan); }
+    .top-note { color: var(--muted); font-size: .88rem; }
+    .hero { text-align: center; padding: 62px 0 42px; }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line);
+      border-radius: 99px; padding: 8px 13px; color: #c9d4ff; background: rgba(255,255,255,.035);
+      font-size: .8rem; letter-spacing: .08em; text-transform: uppercase;
+    }
+    h1 { font-size: clamp(2.6rem, 7vw, 5.2rem); line-height: .99; letter-spacing: -.065em; margin: 23px 0 18px; }
+    h1 .gradient { background: linear-gradient(90deg, var(--cyan), #b9a5ff 55%, #ff9ec2); color: transparent; background-clip: text; }
+    .intro { color: var(--muted); font-size: clamp(1rem, 2vw, 1.15rem); line-height: 1.7; max-width: 600px; margin: auto; }
+    .fact-stage {
+      position: relative; max-width: 820px; margin: 22px auto 0; padding: 1px;
+      border-radius: 27px; background: linear-gradient(135deg, rgba(110,231,249,.55), rgba(167,139,250,.5), rgba(251,113,133,.25));
+      box-shadow: 0 24px 90px rgba(0,0,0,.25);
+    }
+    .fact-card { min-height: 300px; border-radius: 26px; padding: clamp(25px, 5vw, 48px); background: linear-gradient(145deg, rgba(21,29,53,.97), rgba(12,17,32,.98)); text-align: left; }
+    .fact-top { display: flex; justify-content: space-between; align-items: center; gap: 15px; }
+    .category-pill { color: var(--cyan); border: 1px solid rgba(110,231,249,.25); background: rgba(110,231,249,.08); border-radius: 99px; padding: 7px 11px; font-size: .78rem; font-weight: 700; }
+    .fact-count { color: #7f8aa9; font-size: .8rem; }
+    .fact-emoji { font-size: 3.3rem; margin: 30px 0 15px; filter: drop-shadow(0 0 18px rgba(110,231,249,.18)); }
+    #factText { font-size: clamp(1.45rem, 3.5vw, 2.25rem); line-height: 1.35; letter-spacing: -.035em; margin: 0; max-width: 680px; }
+    .fact-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+    .btn { border: 1px solid var(--line); border-radius: 13px; padding: 13px 18px; color: var(--text); background: rgba(255,255,255,.045); transition: transform .18s, border-color .18s, background .18s; }
+    .btn:hover { transform: translateY(-2px); border-color: rgba(110,231,249,.5); }
+    .btn-primary { color: #08111e; font-weight: 800; border: 0; background: linear-gradient(100deg, var(--cyan), #b8a5ff); }
+    .btn-primary:hover { background: linear-gradient(100deg, #a5f3fc, #d4c6ff); }
+    .btn:focus-visible, .category:focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; }
+    .section-head { display: flex; justify-content: space-between; align-items: end; gap: 15px; margin: 68px 0 20px; }
+    .section-head h2 { margin: 0; font-size: clamp(1.55rem, 3vw, 2rem); letter-spacing: -.04em; }
+    .section-head p { margin: 8px 0 0; color: var(--muted); }
+    .category-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+    .category {
+      text-align: left; min-height: 118px; border: 1px solid var(--line); border-radius: 18px;
+      padding: 18px 15px; color: var(--text); background: var(--panel); transition: .2s;
+    }
+    .category:hover, .category.active { transform: translateY(-3px); border-color: rgba(110,231,249,.55); background: rgba(110,231,249,.08); }
+    .category .icon { display: block; font-size: 1.7rem; margin-bottom: 12px; }
+    .category strong { display: block; font-size: .95rem; }
+    .category small { display: block; color: var(--muted); margin-top: 5px; }
+    .bottom-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 16px; margin: 28px 0 70px; }
+    .mini-card { border: 1px solid var(--line); background: var(--panel); border-radius: 20px; padding: 25px; }
+    .mini-card h3 { margin: 0 0 10px; font-size: 1.1rem; }
+    .mini-card p { color: var(--muted); line-height: 1.65; margin: 0 0 17px; }
+    .daily-label { color: var(--green); text-transform: uppercase; letter-spacing: .1em; font-size: .75rem; font-weight: 800; }
+    #dailyText { color: #eef2ff; font-size: 1.12rem; line-height: 1.55; margin: 12px 0 0; }
+    .saved-list { color: var(--muted); font-size: .92rem; line-height: 1.7; }
+    .saved-item { border-top: 1px solid var(--line); padding: 10px 0; }
+    .saved-item:first-child { border-top: 0; }
+    footer { border-top: 1px solid var(--line); padding: 24px 0 35px; color: #77819e; font-size: .85rem; display: flex; justify-content: space-between; gap: 15px; flex-wrap: wrap; }
+    .toast { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; padding: 12px 18px; border: 1px solid var(--line); border-radius: 12px; color: var(--text); background: #1b2440; box-shadow: 0 10px 40px #0005; transition: .25s; z-index: 5; }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    @media (max-width: 760px) {
+      .hero { padding-top: 40px; }
+      .category-grid { grid-template-columns: repeat(2, 1fr); }
+      .category:last-child { grid-column: span 2; }
+      .bottom-grid { grid-template-columns: 1fr; }
+      .top-note { display: none; }
+      .section-head { align-items: start; flex-direction: column; }
+      .fact-card { min-height: 330px; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand"><div class="logo">✦</div>curio<span>.</span></div>
+      <div class="top-note">A little wonder for your everyday</div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="eyebrow">✦ Your daily dose of wonder</div>
+        <h1>The world is full of<br><span class="gradient">“wait, what?!”</span></h1>
+        <p class="intro">Tiny discoveries. Big surprises. Explore fascinating facts about the universe, nature, history, and the technology shaping tomorrow.</p>
+
+        <div class="fact-stage" aria-live="polite">
+          <div class="fact-card">
+            <div class="fact-top">
+              <span class="category-pill" id="factCategory">SPACE</span>
+              <span class="fact-count" id="factCount">FACT 01</span>
+            </div>
+            <div class="fact-emoji" id="factEmoji">🌌</div>
+            <p id="factText">A day on Venus is longer than a year on Venus.</p>
+            <div class="fact-actions">
+              <button class="btn btn-primary" id="nextBtn">🎲 Surprise me</button>
+              <button class="btn" id="copyBtn">▢ Copy fact</button>
+              <button class="btn" id="saveBtn">♡ Save fact</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head">
+          <div><h2>Pick your curiosity</h2><p>Choose a topic and see where the rabbit hole goes.</p></div>
+        </div>
+        <div class="category-grid" id="categories">
+          <button class="category active" data-category="All"><span class="icon">✨</span><strong>Surprise me</strong><small>Anything goes</small></button>
+          <button class="category" data-category="Science"><span class="icon">🧪</span><strong>Science</strong><small>How things work</small></button>
+          <button class="category" data-category="Animals"><span class="icon">🐙</span><strong>Animals</strong><small>Wild discoveries</small></button>
+          <button class="category" data-category="Space"><span class="icon">🪐</span><strong>Space</strong><small>Beyond Earth</small></button>
+          <button class="category" data-category="History"><span class="icon">🏺</span><strong>History & Tech</strong><small>Then and now</small></button>
+        </div>
+      </section>
+
+      <section class="bottom-grid">
+        <article class="mini-card">
+          <div class="daily-label">✦ Today’s curiosity</div>
+          <h3>A fact to take with you</h3>
+          <p id="dailyText">Octopuses have three hearts, and two of them stop beating while they swim.</p>
+          <button class="btn" id="dailyBtn">Show me another</button>
+        </article>
+        <article class="mini-card">
+          <h3>📌 Your saved facts</h3>
+          <p>Keep the discoveries you want to remember.</p>
+          <div class="saved-list" id="savedList">No saved facts yet. Tap “Save fact” on a discovery you love.</div>
+        </article>
+      </section>
+    </main>
+
+    <footer><span>© <span id="year"></span> Curio — made for curious minds.</span><span>Stay curious. Keep asking why.</span></footer>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const facts = [
+      { category: "Space", emoji: "🪐", text: "A day on Venus is longer than a year on Venus." },
+      { category: "Animals", emoji: "🐙", text: "Octopuses have three hearts, and two of them stop beating while they swim." },
+      { category: "Science", emoji: "⚡", text: "Lightning can heat the air around it to temperatures hotter than the surface of the Sun." },
+      { category: "Animals", emoji: "🦈", text: "Sharks existed before trees appeared on Earth." },
+      { category: "Space", emoji: "🌌", text: "Sunlight takes about eight minutes and twenty seconds to reach Earth." },
+      { category: "Science", emoji: "🍯", text: "Properly sealed honey can remain edible for an extraordinarily long time because it has very little available water and is acidic." },
+      { category: "History", emoji: "📚", text: "The University of Oxford was teaching students centuries before the Aztec Empire was founded." },
+      { category: "Animals", emoji: "🦋", text: "Butterflies taste with sensors on their feet." },
+      { category: "Science", emoji: "🌊", text: "Water can boil and freeze at the same time under the right pressure conditions, at its triple point." },
+      { category: "Space", emoji: "🌑", text: "Footprints left by astronauts on the Moon can last for millions of years because there is no wind or rain to erase them." },
+      { category: "Animals", emoji: "🦦", text: "Sea otters sometimes hold hands while resting so they drift apart less easily." },
+      { category: "History", emoji: "🖨️", text: "The first computer “bug” story involved a real moth found in a relay of the Harvard Mark II computer in 1947." },
+      { category: "Science", emoji: "🧠", text: "Your brain itself has no pain receptors, although surrounding tissues do." },
+      { category: "Space", emoji: "☀️", text: "The Sun contains more than 99% of the total mass of our solar system." },
+      { category: "Animals", emoji: "🐧", text: "Penguins have knees; their legs are mostly hidden beneath their feathers and body shape." },
+      { category: "History", emoji: "🧭", text: "The printing press helped books and ideas spread much more quickly across Europe in the 15th century." },
+      { category: "Science", emoji: "🌱", text: "A single teaspoon of healthy soil can contain many millions of microorganisms." },
+      { category: "Space", emoji: "💫", text: "Neutron stars are so dense that a tiny amount of their material would have an enormous mass on Earth." },
+      { category: "Animals", emoji: "🐘", text: "Elephants can recognize themselves in a mirror, a test associated with self-recognition." },
+      { category: "History", emoji: "⌨️", text: "The QWERTY keyboard layout became widespread during the era of mechanical typewriters." }
+    ];
+
+    let currentFact = facts[0];
+    let activeCategory = "All";
+    let lastIndex = -1;
+    const saved = [];
+
+    const $ = (id) => document.getElementById(id);
+    function showToast(message) {
+      $("toast").textContent = message;
+      $("toast").classList.add("show");
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => $("toast").classList.remove("show"), 2200);
+    }
+    function renderFact(fact) {
+      currentFact = fact;
+      $("factCategory").textContent = fact.category.toUpperCase();
+      $("factEmoji").textContent = fact.emoji;
+      $("factText").textContent = fact.text;
+      $("factCount").textContent = `FACT ${String(facts.indexOf(fact) + 1).padStart(2, "0")} / ${facts.length}`;
+      $("saveBtn").textContent = saved.some(x => x.text === fact.text) ? "♥ Saved" : "♡ Save fact";
+    }
+    function pickFact(category = activeCategory) {
+      const pool = category === "All" ? facts : facts.filter(f => f.category === category);
+      if (!pool.length) return;
+      let index = Math.floor(Math.random() * pool.length);
+      if (pool.length > 1 && pool[index] === currentFact) index = (index + 1) % pool.length;
+      lastIndex = index;
+      renderFact(pool[index]);
+    }
+    function renderSaved() {
+      const box = $("savedList");
+      if (!saved.length) {
+        box.textContent = "No saved facts yet. Tap “Save fact” on a discovery you love.";
+        return;
+      }
+      box.innerHTML = "";
+      saved.forEach((fact, index) => {
+        const item = document.createElement("div");
+        item.className = "saved-item";
+        item.textContent = `${fact.emoji} ${fact.text}`;
+        box.appendChild(item);
+      });
+    }
+    $("nextBtn").addEventListener("click", () => pickFact());
+    $("copyBtn").addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(`${currentFact.emoji} ${currentFact.text}`);
+        showToast("Fact copied to clipboard!");
+      } catch {
+        showToast("Clipboard access is unavailable in this browser.");
+      }
+    });
+    $("saveBtn").addEventListener("click", () => {
+      const index = saved.findIndex(x => x.text === currentFact.text);
+      if (index >= 0) {
+        saved.splice(index, 1);
+        showToast("Removed from saved facts.");
+      } else {
+        saved.unshift(currentFact);
+        showToast("Fact saved!");
+      }
+      renderSaved();
+      renderFact(currentFact);
+    });
+    $("categories").addEventListener("click", (event) => {
+      const button = event.target.closest("[data-category]");
+      if (!button) return;
+      activeCategory = button.dataset.category;
+      document.querySelectorAll(".category").forEach(el => el.classList.toggle("active", el === button));
+      pickFact(activeCategory);
+    });
+    $("dailyBtn").addEventListener("click", () => {
+      const pool = facts.filter(f => f.text !== $("dailyText").textContent);
+      $("dailyText").textContent = pool[Math.floor(Math.random() * pool.length)].text;
+    });
+    $("year").textContent = new Date().getFullYear();
+    renderFact(facts[0]);
+  </script>
+</body>
+</html>
